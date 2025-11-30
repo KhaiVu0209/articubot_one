@@ -146,6 +146,8 @@
 
     <gazebo reference="caster_wheel">
         <material>Gazebo/Black</material>
+        <mu1 value="0.001"/> <!--ma sát trục X tiếp xúc sàn, dễ bị kéo lê lắc lư-->
+        <mu2 value="0.001"/>  <!--ma sát trục Y tiếp xúc sàn-->
     </gazebo>
     
     
