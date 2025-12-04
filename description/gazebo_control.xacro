@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+    <!-- file nay su dung thu vien cho differential chi dieu khien duoc trong gazebo 
+    Dung de test robot trong simulation, tat ca moi thu trong day chi hoat dong trong gazebo, 
+    real khong su dung dc-->
     <gazebo>
         <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
 
