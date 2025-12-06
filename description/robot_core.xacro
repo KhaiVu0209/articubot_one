@@ -1,8 +1,23 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
+    <xacro:include filename="inertial_macros.xacro"/>
 
-    <xacro:include filename="inertial_macros.xacro"/> 
+
+    <xacro:property name="chassis_length" value="0.335"/>
+    <xacro:property name="chassis_width" value="0.265"/>
+    <xacro:property name="chassis_height" value="0.138"/>
+    <xacro:property name="chassis_mass" value="1.0"/>
+    <xacro:property name="wheel_radius" value="0.034"/>
+    <xacro:property name="wheel_thickness" value="0.026"/>
+    <xacro:property name="wheel_mass" value="0.05"/>
+    <xacro:property name="wheel_offset_x" value="0.226"/>
+    <xacro:property name="wheel_offset_y" value="0.166"/>
+    <xacro:property name="wheel_offset_z" value="0.01"/>
+    <xacro:property name="caster_wheel_radius" value="0.01"/>
+    <xacro:property name="caster_wheel_mass" value="0.01"/>
+    <xacro:property name="caster_wheel_offset_x" value="0.075"/>
+    <xacro:property name="caster_wheel_offset_z" value="${wheel_offset_z - wheel_radius + caster_wheel_radius}"/>
 
     <material name="white">
         <color rgba="1 1 1 1" />
@@ -33,94 +48,97 @@
 
     <!-- CHASSIS LINK -->
 
-    <joint name="chassis_joint" type="fixed"> 
+    <joint name="chassis_joint" type="fixed">
         <parent link="base_link"/>
         <child link="chassis"/>
-        <origin xyz="-0.1 0 0"/>
+        <origin xyz="${-wheel_offset_x} 0 ${-wheel_offset_z}"/>
     </joint>
 
     <link name="chassis">
         <visual>
-            <origin xyz="0.15 0 0.075"/>
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}"/>
             <geometry>
-                <box size="0.3 0.3 0.15"/>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
             </geometry>
-            <material name="white"/>
+            <material name="orange"/>
         </visual>
         <collision>
-            <origin xyz="0.15 0 0.075"/>
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}"/>
             <geometry>
-                <box size="0.3 0.3 0.15"/>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
             </geometry>
         </collision>
-        <xacro:inertial_box mass="0.5" x="0.3" y="0.3" z="0.15">
-            <origin xyz="0.15 0 0.075" rpy="0 0 0"/>
+        <xacro:inertial_box mass="0.5" x="${chassis_length}" y="${chassis_width}" z="${chassis_height}">
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
 
     <gazebo reference="chassis">
-        <material>Gazebo/Blue</material> <!-- Change the color in Gazebo-->
+        <material>Gazebo/White</material>
     </gazebo>
-    
+
     <!-- LEFT WHEEL LINK -->
-    
+
     <!--joint name: Quy định mối ghép. Quy định cách left wheel gắn vào Khungxe (base_link)-->
     <joint name="left_wheel_joint" type="continuous"> <!--continuous khớp xoay không giới hạn-->
         <parent link="base_link"/>  <!--Khung xe: đứng yên trong hệ quy chiếu -->
         <child link="left_wheel"/>  <!--Left Wheel: đứng yên trong hệ quy chiếu -->
-        <origin xyz="0 0.175 0" rpy="-${pi/2} 0 0" /> <!--Bánh xe nằm lệch về phía trục Y (bên trái/0.175m)-->
-        <!--rpy="-${pi/2} 0 0": Mặc định hình trụ(cylinder) trong ROS đứng thẳng theo trục Z Để nằm ngang thành cái bánh xe,xoay nó -90 độ ($-\pi/2$) quanh trục X. -->
+        <origin xyz="0 ${wheel_offset_y} 0" rpy="-${pi/2} 0 0" />   <!--Bánh xe nằm lệch về phía trục Y (bên trái/0.175m)-->
         <axis xyz="0 0 1"/> <!--Trục quay cua wheel-->
     </joint>
 
     <!--link name: Quy định hình dáng vật lý-->
     <link name="left_wheel">
         <!--Thẻ hình ảnh hiển thị-->
-        <visual> 
-            <geometry> <!--The hình học-->
-                <cylinder radius="0.05" length="0.04"/> <!--The hình trụ: r = 5cm, độ dày 4cm-->
+        <visual>
+            <geometry>  <!--The hình học-->
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/> <!--The hình trụ: r = 5cm, độ dày 4cm-->
             </geometry>
             <material name="blue"/>
         </visual>
         <!--Thẻ va chạm vật lý, tinh toan trong gazebo-->
         <collision>
             <geometry>
-                <cylinder radius="0.05" length="0.04"/>
+                <sphere radius="${wheel_radius}"/>
             </geometry>
         </collision>
+
         <!--Thẻ Quán tính-->
-        <xacro:inertial_cylinder mass="0.1" length="0.04" radius="0.05">
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
             <origin xyz="0 0 0" rpy="0 0 0"/>
         </xacro:inertial_cylinder>
     </link>
 
-
-    <gazebo reference="left_wheel">         <!--The hien thi trong gazebo-->
-        <material>Gazebo/Orange</material> 
+    <!--The hien thi trong gazebo-->
+    <gazebo reference="left_wheel"> 
+        <material>Gazebo/Blue</material>
     </gazebo>
+
+
+
 
     <!-- RIGHT WHEEL LINK -->
 
     <joint name="right_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="right_wheel"/>
-        <origin xyz="0 -0.175 0" rpy="${pi/2} 0 0" />
+        <origin xyz="0 ${-wheel_offset_y} 0" rpy="${pi/2} 0 0" />
         <axis xyz="0 0 -1"/>
     </joint>
 
     <link name="right_wheel">
         <visual>
             <geometry>
-                <cylinder radius="0.05" length="0.04"/>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
             </geometry>
             <material name="blue"/>
         </visual>
         <collision>
             <geometry>
-                <cylinder radius="0.05" length="0.04"/>
+                <sphere radius="${wheel_radius}"/>
             </geometry>
         </collision>
-        <xacro:inertial_cylinder mass="0.1" length="0.04" radius="0.05">
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
             <origin xyz="0 0 0" rpy="0 0 0"/>
         </xacro:inertial_cylinder>
     </link>
@@ -129,44 +147,42 @@
         <material>Gazebo/Orange</material>
     </gazebo>
 
+
     <!-- CASTER WHEEL LINK -->
 
     <joint name="caster_wheel_joint" type="fixed">
         <parent link="chassis"/>
         <child link="caster_wheel"/>
-        <origin xyz="0.24 0 0"/>
+        <origin xyz="${caster_wheel_offset_x} 0 ${caster_wheel_offset_z}"/>
     </joint>
 
 
     <link name="caster_wheel">
         <visual>
             <geometry>
-                <sphere radius="0.05"/>
+                <sphere radius="${caster_wheel_radius}"/>
             </geometry>
-            <material name="black"/>
+            <material name="white"/>
         </visual>
         <collision>
             <geometry>
-                <sphere radius="0.05"/>
+                <sphere radius="${caster_wheel_radius}"/>
             </geometry>
         </collision>
-        <xacro:inertial_sphere mass="0.1" radius="0.05">
+        <xacro:inertial_sphere mass="${caster_wheel_mass}" radius="${caster_wheel_radius}">
             <origin xyz="0 0 0" rpy="0 0 0"/>
         </xacro:inertial_sphere>
     </link>
 
     <gazebo reference="caster_wheel">
-        <material>Gazebo/Black</material>
-        <mu1 value="0.001"/> <!--ma sát trục X tiếp xúc sàn, dễ bị kéo lê lắc lư-->
-        <mu2 value="0.001"/>  <!--ma sát trục Y tiếp xúc sàn-->
+        <material>Gazebo/White</material>
+        <mu1 value="0.001"/> 
+        <mu2 value="0.001"/>
     </gazebo>
-    
-    
+
 </robot>
 
 <!-- joint-Khớp nối: Sinh ra TF mô tả mối liên kết giữa 2 link, 
-parent-Link cha: link đứng yên hơn, làm gốc tham chiếu cho khớp,
+parent-Link cha: link đứng yên, làm gốc tham chiếu cho khớp,
 child-Link con: nối vào link cha qua joint 
 origin-xyz: vị trí joint tính theo tọa độ của link cha, rpy: độ xoay của joint (Roll–Pitch–Yaw)-->
-
-
