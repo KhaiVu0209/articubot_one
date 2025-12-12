@@ -8,11 +8,11 @@
     <xacro:property name="chassis_width" value="0.265"/>
     <xacro:property name="chassis_height" value="0.138"/>
     <xacro:property name="chassis_mass" value="1.0"/>
-    <xacro:property name="wheel_radius" value="0.034"/>
+    <xacro:property name="wheel_radius" value="0.033"/>
     <xacro:property name="wheel_thickness" value="0.026"/>
     <xacro:property name="wheel_mass" value="0.05"/>
     <xacro:property name="wheel_offset_x" value="0.226"/>
-    <xacro:property name="wheel_offset_y" value="0.166"/>
+    <xacro:property name="wheel_offset_y" value="0.1485"/>
     <xacro:property name="wheel_offset_z" value="0.01"/>
     <xacro:property name="caster_wheel_radius" value="0.01"/>
     <xacro:property name="caster_wheel_mass" value="0.01"/>
@@ -60,7 +60,7 @@
             <geometry>
                 <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
             </geometry>
-            <material name="orange"/>
+            <material name="white"/>
         </visual>
         <collision>
             <origin xyz="${chassis_length/2} 0 ${chassis_height/2}"/>
@@ -79,38 +79,31 @@
 
     <!-- LEFT WHEEL LINK -->
 
-    <!--joint name: Quy định mối ghép. Quy định cách left wheel gắn vào Khungxe (base_link)-->
-    <joint name="left_wheel_joint" type="continuous"> <!--continuous khớp xoay không giới hạn-->
-        <parent link="base_link"/>  <!--Khung xe: đứng yên trong hệ quy chiếu -->
-        <child link="left_wheel"/>  <!--Left Wheel: đứng yên trong hệ quy chiếu -->
-        <origin xyz="0 ${wheel_offset_y} 0" rpy="-${pi/2} 0 0" />   <!--Bánh xe nằm lệch về phía trục Y (bên trái/0.175m)-->
-        <axis xyz="0 0 1"/> <!--Trục quay cua wheel-->
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="left_wheel"/>
+        <origin xyz="0 ${wheel_offset_y} 0" rpy="-${pi/2} 0 0" />
+        <axis xyz="0 0 1"/>
     </joint>
 
-    <!--link name: Quy định hình dáng vật lý-->
     <link name="left_wheel">
-        <!--Thẻ hình ảnh hiển thị-->
         <visual>
-            <geometry>  <!--The hình học-->
-                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/> <!--The hình trụ: r = 5cm, độ dày 4cm-->
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
             </geometry>
             <material name="blue"/>
         </visual>
-        <!--Thẻ va chạm vật lý, tinh toan trong gazebo-->
         <collision>
             <geometry>
                 <sphere radius="${wheel_radius}"/>
             </geometry>
         </collision>
-
-        <!--Thẻ Quán tính-->
         <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
             <origin xyz="0 0 0" rpy="0 0 0"/>
         </xacro:inertial_cylinder>
     </link>
 
-    <!--The hien thi trong gazebo-->
-    <gazebo reference="left_wheel"> 
+    <gazebo reference="left_wheel">
         <material>Gazebo/Blue</material>
     </gazebo>
 
@@ -144,7 +137,7 @@
     </link>
 
     <gazebo reference="right_wheel">
-        <material>Gazebo/Orange</material>
+        <material>Gazebo/Blue</material>
     </gazebo>
 
 
@@ -176,7 +169,7 @@
 
     <gazebo reference="caster_wheel">
         <material>Gazebo/White</material>
-        <mu1 value="0.001"/> 
+        <mu1 value="0.001"/>
         <mu2 value="0.001"/>
     </gazebo>
 

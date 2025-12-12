@@ -4,15 +4,22 @@
     <joint name="laser_joint" type="fixed">
         <parent link="chassis"/>
         <child link="laser_frame"/>
-        <origin xyz="0.1 0 0.175" rpy="0 0 0"/>
+        <origin xyz="0.122 0 0.212" rpy="0 0 0"/>
     </joint>
 
     <link name="laser_frame">
         <visual>
-            <geometry> 
+            <geometry>
                 <cylinder radius="0.05" length="0.04"/>
             </geometry>
-            <material name="red"/>
+            <material name="black"/>
+        </visual>
+        <visual>
+            <origin xyz="0 0 -0.05"/>
+            <geometry>
+                <cylinder radius="0.01" length="0.1"/>
+            </geometry>
+            <material name="black"/>
         </visual>
         <collision>
             <geometry>
@@ -24,30 +31,32 @@
         </xacro:inertial_cylinder>
     </link>
 
-    <gazebo reference="laser_frame">
-        <material>Gazebo/Red</material>
 
-        <sensor name="laser" type="ray"> <!--Ray Tracing-->
+
+    <gazebo reference="laser_frame">
+        <material>Gazebo/Black</material>
+
+        <sensor name="laser" type="ray">  <!--Ray Tracing-->
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>false</visualize>
             <update_rate>10</update_rate> <!-- Tần số quét là 10 Hz -->
             <ray>
                 <scan>
                     <horizontal>
-                        <samples>360</samples>  <!-- 1 vòng quay nó lấy 360 điểm dữ liệu -->
+                        <samples>360</samples> <!-- 1 vòng quay nó lấy 360 điểm dữ liệu -->
                         <min_angle>-3.14</min_angle>
                         <max_angle>3.14</max_angle>
                     </horizontal>
                 </scan>
                 <range>
-                    <min>0.1</min> 
+                    <min>0.3</min>
                     <max>8</max> <!--Pham vi do dc max-->
                 </range>
             </ray>
             <!--biến dữ liệu ảo thành topic ROS.-->
             <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so"> <!--Library simulate lidar in ROS-->
                 <ros>
-                    <argument>~/out:=scan</argument> <!--đổi tên topic, Mặc định plugin sẽ public ra topic tên dài -->
+                    <argument>~/out:=scan</argument> <!--đổi tên topic, Mặc định plugin sẽ public ra topic khac-->
                 </ros>
                 <output_type>sensor_msgs/LaserScan</output_type> <!--Publish ra array data -->
                 <frame_name>laser_frame</frame_name> <!--Dữ liệu bắn ra sẽ gắn với hệ toạ độ laser_frame-->

@@ -1,0 +1,4 @@
+# Cau hinh xung nhip giua ROS va Gazebo 
+gazebo:
+  ros__parameters:
+    publish_rate: 400.0
