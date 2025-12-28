@@ -4,7 +4,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 30   # Tần số cập nhật vòng lặp điều khiển chính
-    use_sim_time: true  # Dùng thời gian giả lập chạy Gazebo
+    #use_sim_time: true  # Dùng thời gian giả lập chạy Gazebo
 
     # Name of members
     diff_cont: #bộ não điều khiển
@@ -23,8 +23,8 @@ diff_cont:
 
     left_wheel_names: ['left_wheel_joint']
     right_wheel_names: ['right_wheel_joint']
-    wheel_separation: 0.14 # Khoang cach giua 2 banh xe 
-    wheel_radius: 0.033  # r banh xe
+    wheel_separation: 0.26 # Khoang cach giua 2 banh xe 
+    wheel_radius: 0.029  # r banh xe
 
     use_stamped_vel: false
 
